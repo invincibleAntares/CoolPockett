@@ -35,10 +35,25 @@ function Chip({ label, selected, onClick }) {
   );
 }
 
-export default function AccountSetup({ onAccountTypeChange }) {
+export default function AccountSetup({
+  onAccountTypeChange,
+  onValidChange,
+  showErrors,
+}) {
   const [accountType, setAccountType] = useState(""); // individual | business
   const [goal, setGoal] = useState(""); // spend | save | invest
   const [volume, setVolume] = useState(40);
+  const [errors, setErrors] = useState({});
+
+  function validate(nextAccountType = accountType, nextGoal = goal) {
+    const nextErrors = {};
+    if (!nextAccountType) nextErrors.accountType = "Select an account type.";
+    if (!nextGoal) nextErrors.goal = "Select a product goal.";
+    setErrors(nextErrors);
+    const ok = Object.keys(nextErrors).length === 0;
+    if (onValidChange) onValidChange(ok);
+    return ok;
+  }
 
   return (
     <div className="space-y-8">
@@ -51,6 +66,7 @@ export default function AccountSetup({ onAccountTypeChange }) {
             onClick={() => {
               setAccountType("individual");
               if (onAccountTypeChange) onAccountTypeChange("individual");
+              validate("individual", goal);
             }}
           />
           <SelectCard
@@ -59,9 +75,13 @@ export default function AccountSetup({ onAccountTypeChange }) {
             onClick={() => {
               setAccountType("business");
               if (onAccountTypeChange) onAccountTypeChange("business");
+              validate("business", goal);
             }}
           />
         </div>
+        {showErrors && errors.accountType && (
+          <p className="mt-1 text-xs text-red-600">{errors.accountType}</p>
+        )}
       </div>
 
       <div>
@@ -70,19 +90,31 @@ export default function AccountSetup({ onAccountTypeChange }) {
           <Chip
             label="Spend"
             selected={goal === "spend"}
-            onClick={() => setGoal("spend")}
+            onClick={() => {
+              setGoal("spend");
+              validate(accountType, "spend");
+            }}
           />
           <Chip
             label="Save"
             selected={goal === "save"}
-            onClick={() => setGoal("save")}
+            onClick={() => {
+              setGoal("save");
+              validate(accountType, "save");
+            }}
           />
           <Chip
             label="Invest"
             selected={goal === "invest"}
-            onClick={() => setGoal("invest")}
+            onClick={() => {
+              setGoal("invest");
+              validate(accountType, "invest");
+            }}
           />
         </div>
+        {showErrors && errors.goal && (
+          <p className="mt-1 text-xs text-red-600">{errors.goal}</p>
+        )}
       </div>
 
       <div>

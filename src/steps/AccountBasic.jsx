@@ -11,7 +11,7 @@ function passwordStrength(pw) {
   return { label: "Strong", width: "100%" };
 }
 
-export default function AccountBasic({ onChange }) {
+export default function AccountBasic({ onChange, onValidChange, showErrors }) {
   const [data, setData] = useState({
     fullName: "",
     email: "",
@@ -20,6 +20,39 @@ export default function AccountBasic({ onChange }) {
     password: "",
     showPassword: false,
   });
+  const [errors, setErrors] = useState({});
+
+  function validate(next) {
+    const values = next || data;
+    const nextErrors = {};
+
+    if (!values.fullName?.trim()) {
+      nextErrors.fullName = "Full name is required.";
+    }
+
+    if (!values.email?.trim()) {
+      nextErrors.email = "Email is required.";
+    } else if (!/.+@.+\..+/.test(values.email)) {
+      nextErrors.email = "Enter a valid email.";
+    }
+
+    if (!values.phone?.trim()) {
+      nextErrors.phone = "Phone is required.";
+    }
+
+    if (!values.country) {
+      nextErrors.country = "Select a country.";
+    }
+
+    if (!values.password || values.password.length < 6) {
+      nextErrors.password = "Password must be at least 6 characters.";
+    }
+
+    setErrors(nextErrors);
+    const ok = Object.keys(nextErrors).length === 0;
+    if (onValidChange) onValidChange(ok);
+    return ok;
+  }
 
   const strength = passwordStrength(data.password);
 
@@ -33,8 +66,12 @@ export default function AccountBasic({ onChange }) {
             const next = { ...data, fullName: e.target.value };
             setData(next);
             if (onChange) onChange(next);
+            validate(next);
           }}
         />
+        {showErrors && errors.fullName && (
+          <p className="mt-1 text-xs text-red-600">{errors.fullName}</p>
+        )}
       </Field>
 
       <Field label="Email">
@@ -46,8 +83,12 @@ export default function AccountBasic({ onChange }) {
             const next = { ...data, email: e.target.value };
             setData(next);
             if (onChange) onChange(next);
+            validate(next);
           }}
         />
+        {showErrors && errors.email && (
+          <p className="mt-1 text-xs text-red-600">{errors.email}</p>
+        )}
       </Field>
 
       <Field label="Phone">
@@ -59,8 +100,12 @@ export default function AccountBasic({ onChange }) {
             const next = { ...data, phone: e.target.value };
             setData(next);
             if (onChange) onChange(next);
+            validate(next);
           }}
         />
+        {showErrors && errors.phone && (
+          <p className="mt-1 text-xs text-red-600">{errors.phone}</p>
+        )}
       </Field>
 
       <Field label="Country of residency">
@@ -71,6 +116,7 @@ export default function AccountBasic({ onChange }) {
             const next = { ...data, country: value };
             setData(next);
             if (onChange) onChange(next);
+            validate(next);
           }}
         >
           <option value="" disabled hidden>
@@ -80,6 +126,9 @@ export default function AccountBasic({ onChange }) {
           <option value="IN">India</option>
           <option value="OTHER">Other</option>
         </Select>
+        {showErrors && errors.country && (
+          <p className="mt-1 text-xs text-red-600">{errors.country}</p>
+        )}
       </Field>
 
       <Field label="Password">
@@ -89,7 +138,12 @@ export default function AccountBasic({ onChange }) {
             placeholder=""
             value={data.password}
             onChange={(e) =>
-              setData({ ...data, password: e.target.value })
+              {
+                const next = { ...data, password: e.target.value };
+                setData(next);
+                if (onChange) onChange(next);
+                validate(next);
+              }
             }
             className="pr-10"
           />
@@ -132,6 +186,9 @@ export default function AccountBasic({ onChange }) {
               {strength.label}
             </div>
           </div>
+        )}
+        {showErrors && errors.password && (
+          <p className="mt-1 text-xs text-red-600">{errors.password}</p>
         )}
       </Field>
     </div>

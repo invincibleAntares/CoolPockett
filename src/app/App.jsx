@@ -21,8 +21,29 @@ export default function App() {
     email: "",
     phone: "",
   });
+  const [stepValid, setStepValid] = useState({
+    1: false,
+    2: false,
+    3: false,
+  });
+  const [showErrors, setShowErrors] = useState({
+    1: false,
+    2: false,
+    3: false,
+  });
 
-  const next = () => setStep((s) => Math.min(4, s + 1));
+  const next = () => {
+    if (step === 4) {
+      setStep(4);
+      return;
+    }
+
+    setShowErrors((prev) => ({ ...prev, [step]: true }));
+
+    if (stepValid[step]) {
+      setStep((s) => Math.min(4, s + 1));
+    }
+  };
   const back = () => setStep((s) => Math.max(1, s - 1));
 
   return (
@@ -53,6 +74,10 @@ export default function App() {
               });
               setCountry(next.country || "US");
             }}
+            onValidChange={(isValid) =>
+              setStepValid((prev) => ({ ...prev, 1: isValid }))
+            }
+            showErrors={showErrors[1]}
           />
         )}
         {step === 2 && (
@@ -60,10 +85,21 @@ export default function App() {
             onAccountTypeChange={(value) =>
               setAccountType(value || "individual")
             }
+            onValidChange={(isValid) =>
+              setStepValid((prev) => ({ ...prev, 2: isValid }))
+            }
+            showErrors={showErrors[2]}
           />
         )}
         {step === 3 && (
-          <Details accountType={accountType} country={country} />
+          <Details
+            accountType={accountType}
+            country={country}
+            onValidChange={(isValid) =>
+              setStepValid((prev) => ({ ...prev, 3: isValid }))
+            }
+            showErrors={showErrors[3]}
+          />
         )}
         {step === 4 && <Review basic={basic} accountType={accountType} country={country} />}
       </div>
