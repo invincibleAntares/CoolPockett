@@ -11,7 +11,7 @@ function passwordStrength(pw) {
   return { label: "Strong", width: "100%" };
 }
 
-export default function AccountBasic({ onCountryChange }) {
+export default function AccountBasic({ onChange }) {
   const [data, setData] = useState({
     fullName: "",
     email: "",
@@ -29,9 +29,11 @@ export default function AccountBasic({ onCountryChange }) {
         <Input
           placeholder="Enter name"
           value={data.fullName}
-          onChange={(e) =>
-            setData({ ...data, fullName: e.target.value })
-          }
+          onChange={(e) => {
+            const next = { ...data, fullName: e.target.value };
+            setData(next);
+            if (onChange) onChange(next);
+          }}
         />
       </Field>
 
@@ -40,9 +42,11 @@ export default function AccountBasic({ onCountryChange }) {
           type="email"
           placeholder="Enter email"
           value={data.email}
-          onChange={(e) =>
-            setData({ ...data, email: e.target.value })
-          }
+          onChange={(e) => {
+            const next = { ...data, email: e.target.value };
+            setData(next);
+            if (onChange) onChange(next);
+          }}
         />
       </Field>
 
@@ -51,9 +55,11 @@ export default function AccountBasic({ onCountryChange }) {
           type="tel"
           placeholder="Enter phone"
           value={data.phone}
-          onChange={(e) =>
-            setData({ ...data, phone: e.target.value })
-          }
+          onChange={(e) => {
+            const next = { ...data, phone: e.target.value };
+            setData(next);
+            if (onChange) onChange(next);
+          }}
         />
       </Field>
 
@@ -62,8 +68,9 @@ export default function AccountBasic({ onCountryChange }) {
           value={data.country}
           onChange={(e) => {
             const value = e.target.value;
-            setData({ ...data, country: value });
-            if (onCountryChange) onCountryChange(value);
+            const next = { ...data, country: value };
+            setData(next);
+            if (onChange) onChange(next);
           }}
         >
           <option value="" disabled hidden>

@@ -3,6 +3,7 @@ import WizardLayout from "../components/wizard/WizardLayout";
 import AccountBasic from "../steps/AccountBasic";
 import AccountSetup from "../steps/AccountSetup";
 import Details from "../steps/Details";
+import Review from "../steps/Review";
 
 const TITLES = {
   1: "Account basics",
@@ -15,6 +16,11 @@ export default function App() {
   const [step, setStep] = useState(1);
   const [country, setCountry] = useState("US");
   const [accountType, setAccountType] = useState("individual");
+  const [basic, setBasic] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+  });
 
   const next = () => setStep((s) => Math.min(4, s + 1));
   const back = () => setStep((s) => Math.max(1, s - 1));
@@ -39,7 +45,14 @@ export default function App() {
       <div className={step === 1 ? "mt-8" : ""}>
         {step === 1 && (
           <AccountBasic
-            onCountryChange={(value) => setCountry(value || "US")}
+            onChange={(next) => {
+              setBasic({
+                fullName: next.fullName,
+                email: next.email,
+                phone: next.phone,
+              });
+              setCountry(next.country || "US");
+            }}
           />
         )}
         {step === 2 && (
@@ -52,6 +65,7 @@ export default function App() {
         {step === 3 && (
           <Details accountType={accountType} country={country} />
         )}
+        {step === 4 && <Review basic={basic} accountType={accountType} country={country} />}
       </div>
     </WizardLayout>
   );
