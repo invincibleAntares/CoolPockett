@@ -11,7 +11,7 @@ function passwordStrength(pw) {
   return { label: "Strong", width: "100%" };
 }
 
-export default function AccountBasic() {
+export default function AccountBasic({ onCountryChange }) {
   const [data, setData] = useState({
     fullName: "",
     email: "",
@@ -60,9 +60,11 @@ export default function AccountBasic() {
       <Field label="Country of residency">
         <Select
           value={data.country}
-          onChange={(e) =>
-            setData({ ...data, country: e.target.value })
-          }
+          onChange={(e) => {
+            const value = e.target.value;
+            setData({ ...data, country: value });
+            if (onCountryChange) onCountryChange(value);
+          }}
         >
           <option value="" disabled hidden>
             Select country

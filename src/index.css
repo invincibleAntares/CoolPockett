@@ -4,3 +4,41 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+/* Range slider styling for Monthly volume */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 9999px;
+  background: #e5e7eb; /* neutral gray track, no blue fill */
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #020617; /* near-black knob */
+  cursor: pointer;
+  border: none;
+  margin-top: -4px; /* vertically center thumb on track */
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #020617;
+  cursor: pointer;
+  border: none;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: #e5e7eb;
+}
