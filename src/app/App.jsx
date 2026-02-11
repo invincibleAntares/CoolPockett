@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { loadWizardState, saveWizardState } from "../lib/wizardStorage.js";
+import { getInitialWizardState } from "../lib/wizardSchema.js";
 import WizardLayout from "../components/wizard/WizardLayout";
+import SubmitConfirmation from "../components/SubmitConfirmation";
 import AccountBasic from "../steps/AccountBasic";
 import AccountSetup from "../steps/AccountSetup";
 import Details from "../steps/Details";
@@ -25,14 +27,18 @@ export default function App() {
     2: false,
     3: false,
   });
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     saveWizardState(wizardState);
   }, [wizardState]);
 
-  const step = wizardState.step;
+  const step = Number(wizardState.step) || 1;
   const next = () => {
-    if (step === 4) return;
+    if (step >= 4) {
+      setSubmitted(true);
+      return;
+    }
     setShowErrors((prev) => ({ ...prev, [step]: true }));
     if (stepValid[step]) {
       setWizardState((prev) => ({
@@ -41,12 +47,24 @@ export default function App() {
       }));
     }
   };
+  const handleDone = () => {
+    setSubmitted(false);
+    const initial = getInitialWizardState();
+    setWizardState(initial);
+    saveWizardState(initial);
+    setShowErrors({ 1: false, 2: false, 3: false });
+    setStepValid({ 1: false, 2: false, 3: false });
+  };
   const back = () => {
     setWizardState((prev) => ({
       ...prev,
       step: Math.max(1, prev.step - 1),
     }));
   };
+
+  if (submitted) {
+    return <SubmitConfirmation onDone={handleDone} />;
+  }
 
   return (
     <WizardLayout

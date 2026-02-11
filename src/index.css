@@ -42,3 +42,18 @@ input[type="range"]::-moz-range-track {
   border-radius: 9999px;
   background: #e5e7eb;
 }
+
+/* Submit confirmation: tick icon glow animation */
+@keyframes submit-confirmation-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.12), 0 0 0 8px rgba(15, 23, 42, 0.06);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(15, 23, 42, 0.08), 0 0 0 24px rgba(15, 23, 42, 0.03);
+  }
+}
+
+.submit-confirmation-icon > div {
+  animation: submit-confirmation-glow 2s ease-in-out infinite;
+}

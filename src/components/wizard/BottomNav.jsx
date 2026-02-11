@@ -27,6 +27,7 @@ export default function BottomNav({
           ) : null}
 
           <Button
+            type="button"
             onClick={onNext}
             className={showBack ? "w-auto flex-1" : "w-full"}
           >
