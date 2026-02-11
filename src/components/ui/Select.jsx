@@ -21,12 +21,12 @@ export default function Select({ className, children, value, onChange, ...props 
       const isHidden = child.props.hidden === true;
       const isDisabled = child.props.disabled === true;
       if (isHidden && optValue === "") placeholder = label;
-      if (!isHidden) options.push({ value: optValue, label, disabled: isDisabled });
+      if (!isHidden && optValue !== "") options.push({ value: optValue, label, disabled: isDisabled });
     }
   });
 
   const selectedOption = options.find((o) => String(o.value) === String(value));
-  const displayLabel = selectedOption ? selectedOption.label : placeholder;
+  const displayLabel = selectedOption ? selectedOption.label : "";
 
   useEffect(() => {
     if (!open) return;
@@ -64,7 +64,7 @@ export default function Select({ className, children, value, onChange, ...props 
         aria-expanded={open}
         aria-label={props["aria-label"]}
       >
-        <span className="block truncate">{displayLabel || placeholder}</span>
+        <span className="block truncate">{displayLabel}</span>
         <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
           <Chevron />
         </span>

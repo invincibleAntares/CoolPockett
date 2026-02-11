@@ -16,7 +16,7 @@ const setupSchema = z.object({
   volume: z.number(),
 });
 
-/** KYC/details: dob, address, city, postal, state, ids (ssn, pan, nationalId). */
+/** KYC/details: individual (dob, address, ids) + optional business fields. */
 const detailsSchema = z.object({
   dob: z.string(),
   address1: z.string(),
@@ -26,6 +26,9 @@ const detailsSchema = z.object({
   ssn: z.string(),
   pan: z.string(),
   nationalId: z.string(),
+  businessLegalName: z.string().optional().default(""),
+  registrationCountry: z.string().optional().default(""),
+  role: z.string().optional().default(""),
 });
 
 /** Full wizard state: step 1–4, basic, setup, details. */
@@ -60,6 +63,9 @@ export function getInitialWizardState() {
       ssn: "",
       pan: "",
       nationalId: "",
+      businessLegalName: "",
+      registrationCountry: "",
+      role: "",
     },
   };
 }

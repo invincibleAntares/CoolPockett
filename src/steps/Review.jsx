@@ -71,53 +71,86 @@ export default function Review({
       <section className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
         <div className="mb-2 font-medium text-slate-900">Details</div>
         <div className="space-y-1 text-[13px] text-slate-800">
-          {details.dob && (
-            <div className="flex justify-between">
-              <span>DOB:</span>
-              <span>{details.dob}</span>
-            </div>
-          )}
-          {details.address1 && (
-            <div className="flex justify-between">
-              <span>Address:</span>
-              <span>{details.address1}</span>
-            </div>
-          )}
-          {details.city && (
-            <div className="flex justify-between">
-              <span>City:</span>
-              <span>{details.city}</span>
-            </div>
-          )}
-          {details.postal && (
-            <div className="flex justify-between">
-              <span>Postal code:</span>
-              <span>{details.postal}</span>
-            </div>
-          )}
-          {country === "US" && details.state && (
-            <div className="flex justify-between">
-              <span>State:</span>
-              <span>{STATE_LABELS[details.state] || details.state}</span>
-            </div>
-          )}
-          {country === "US" && details.ssn && (
-            <div className="flex justify-between">
-              <span>SSN last 4:</span>
-              <span>{details.ssn}</span>
-            </div>
-          )}
-          {country === "IN" && details.pan && (
-            <div className="flex justify-between">
-              <span>PAN:</span>
-              <span>{details.pan}</span>
-            </div>
-          )}
-          {country !== "US" && country !== "IN" && details.nationalId && (
-            <div className="flex justify-between">
-              <span>National ID:</span>
-              <span>{details.nationalId}</span>
-            </div>
+          {accountType === "business" ? (
+            <>
+              {details.businessLegalName && (
+                <div className="flex justify-between">
+                  <span>Business legal name:</span>
+                  <span>{details.businessLegalName}</span>
+                </div>
+              )}
+              {details.registrationCountry && (
+                <div className="flex justify-between">
+                  <span>Registration country:</span>
+                  <span>
+                    {details.registrationCountry === "US"
+                      ? "United States"
+                      : details.registrationCountry === "IN"
+                        ? "India"
+                        : details.registrationCountry === "OTHER"
+                          ? "Other"
+                          : details.registrationCountry}
+                  </span>
+                </div>
+              )}
+              {details.role && (
+                <div className="flex justify-between">
+                  <span>Role:</span>
+                  <span>{details.role}</span>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {details.dob && (
+                <div className="flex justify-between">
+                  <span>DOB:</span>
+                  <span>{details.dob}</span>
+                </div>
+              )}
+              {details.address1 && (
+                <div className="flex justify-between">
+                  <span>Address:</span>
+                  <span>{details.address1}</span>
+                </div>
+              )}
+              {details.city && (
+                <div className="flex justify-between">
+                  <span>City:</span>
+                  <span>{details.city}</span>
+                </div>
+              )}
+              {details.postal && (
+                <div className="flex justify-between">
+                  <span>Postal code:</span>
+                  <span>{details.postal}</span>
+                </div>
+              )}
+              {country === "US" && details.state && (
+                <div className="flex justify-between">
+                  <span>State:</span>
+                  <span>{STATE_LABELS[details.state] || details.state}</span>
+                </div>
+              )}
+              {country === "US" && details.ssn && (
+                <div className="flex justify-between">
+                  <span>SSN last 4:</span>
+                  <span>{details.ssn}</span>
+                </div>
+              )}
+              {country === "IN" && details.pan && (
+                <div className="flex justify-between">
+                  <span>PAN:</span>
+                  <span>{details.pan}</span>
+                </div>
+              )}
+              {country !== "US" && country !== "IN" && details.nationalId && (
+                <div className="flex justify-between">
+                  <span>National ID:</span>
+                  <span>{details.nationalId}</span>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

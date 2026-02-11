@@ -12,6 +12,9 @@ const defaultDetails = {
   ssn: "",
   pan: "",
   nationalId: "",
+  businessLegalName: "",
+  registrationCountry: "",
+  role: "",
 };
 
 export default function Details({
@@ -34,20 +37,24 @@ export default function Details({
 
   function validate(next = values) {
     const e = {};
-    if (!next.dob) e.dob = "Date of birth is required.";
-    if (!next.address1.trim()) e.address1 = "Address is required.";
-    if (!next.city.trim()) e.city = "City is required.";
-    if (!next.postal.trim()) e.postal = "Postal code is required.";
-
-    if (country === "US") {
-      if (!next.state.trim()) e.state = "State is required.";
-      if (!/^[0-9]{4}$/.test(next.ssn)) e.ssn = "Enter last 4 digits.";
-    } else if (country === "IN") {
-      if (!next.pan.trim()) e.pan = "PAN is required.";
+    if (accountType === "business") {
+      if (!next.businessLegalName?.trim()) e.businessLegalName = "Business legal name is required.";
+      if (!next.registrationCountry?.trim()) e.registrationCountry = "Registration country is required.";
+      if (!next.role?.trim()) e.role = "Role is required.";
     } else {
-      if (!next.nationalId.trim()) e.nationalId = "National ID is required.";
+      if (!next.dob) e.dob = "Date of birth is required.";
+      if (!next.address1?.trim()) e.address1 = "Address is required.";
+      if (!next.city?.trim()) e.city = "City is required.";
+      if (!next.postal?.trim()) e.postal = "Postal code is required.";
+      if (country === "US") {
+        if (!next.state?.trim()) e.state = "State is required.";
+        if (!/^[0-9]{4}$/.test(next.ssn || "")) e.ssn = "Enter last 4 digits.";
+      } else if (country === "IN") {
+        if (!next.pan?.trim()) e.pan = "PAN is required.";
+      } else {
+        if (!next.nationalId?.trim()) e.nationalId = "National ID is required.";
+      }
     }
-
     setErrors(e);
     const ok = Object.keys(e).length === 0;
     if (onValidChange) onValidChange(ok);
@@ -59,7 +66,7 @@ export default function Details({
       validate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showErrors, country]);
+  }, [showErrors, country, accountType]);
 
   return (
     <div className="space-y-6">
@@ -70,6 +77,68 @@ export default function Details({
         className="bg-slate-50 text-[13px] text-slate-700"
       />
 
+      {accountType === "business" ? (
+        <div className="space-y-4">
+          <Field label="Business legal name">
+            <Input
+              placeholder="Enter business legal name"
+              value={values.businessLegalName ?? ""}
+              onChange={(e) => {
+                const next = { ...values, businessLegalName: e.target.value };
+                setValues(next);
+                if (onChangeDetails) onChangeDetails(next);
+                validate(next);
+              }}
+            />
+            {showErrors && errors.businessLegalName && (
+              <p className="mt-1 text-xs text-red-600">{errors.businessLegalName}</p>
+            )}
+          </Field>
+          <Field label="Registration country">
+            <Select
+              value={values.registrationCountry ?? ""}
+              onChange={(e) => {
+                const next = { ...values, registrationCountry: e.target.value };
+                setValues(next);
+                if (onChangeDetails) onChangeDetails(next);
+                validate(next);
+              }}
+            >
+              <option value="" disabled>
+                Select country
+              </option>
+              <option value="US">United States</option>
+              <option value="IN">India</option>
+              <option value="OTHER">Other</option>
+            </Select>
+            {showErrors && errors.registrationCountry && (
+              <p className="mt-1 text-xs text-red-600">{errors.registrationCountry}</p>
+            )}
+          </Field>
+          <Field label="Your role">
+            <Select
+              value={values.role ?? ""}
+              onChange={(e) => {
+                const next = { ...values, role: e.target.value };
+                setValues(next);
+                if (onChangeDetails) onChangeDetails(next);
+                validate(next);
+              }}
+            >
+              <option value="" disabled>
+                Select role
+              </option>
+              <option value="Owner">Owner</option>
+              <option value="Director">Director</option>
+              <option value="Authorized signatory">Authorized signatory</option>
+            </Select>
+            {showErrors && errors.role && (
+              <p className="mt-1 text-xs text-red-600">{errors.role}</p>
+            )}
+          </Field>
+        </div>
+      ) : (
+        <>
       <Field label="Date of birth">
         <Input
           placeholder="MM/DD/YYYY"
@@ -227,6 +296,8 @@ export default function Details({
           </>
         )}
       </div>
+        </>
+      )}
     </div>
   );
 }
