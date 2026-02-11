@@ -11,15 +11,31 @@ function passwordStrength(pw) {
   return { label: "Strong", width: "100%" };
 }
 
-export default function AccountBasic({ onChange, onValidChange, showErrors }) {
-  const [data, setData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    country: "",
-    password: "",
-    showPassword: false,
-  });
+const defaultBasic = {
+  fullName: "",
+  email: "",
+  phone: "",
+  country: "",
+  password: "",
+  showPassword: false,
+};
+
+export default function AccountBasic({
+  initialBasic,
+  onChange,
+  onValidChange,
+  showErrors,
+}) {
+  const [data, setData] = useState(() => ({
+    ...defaultBasic,
+    ...(initialBasic && {
+      fullName: initialBasic.fullName ?? "",
+      email: initialBasic.email ?? "",
+      phone: initialBasic.phone ?? "",
+      country: initialBasic.country ?? "",
+      password: initialBasic.password ?? "",
+    }),
+  }));
   const [errors, setErrors] = useState({});
 
   function validate(next) {

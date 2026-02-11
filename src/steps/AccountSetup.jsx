@@ -38,14 +38,16 @@ function Chip({ label, selected, onClick }) {
 export default function AccountSetup({
   initialAccountType = "",
   initialGoal = "",
+  initialVolume = 40,
   onAccountTypeChange,
   onGoalChange,
+  onVolumeChange,
   onValidChange,
   showErrors,
 }) {
   const [accountType, setAccountType] = useState(initialAccountType);
   const [goal, setGoal] = useState(initialGoal);
-  const [volume, setVolume] = useState(40);
+  const [volume, setVolume] = useState(initialVolume);
   const [errors, setErrors] = useState({});
 
   function validate(nextAccountType = accountType, nextGoal = goal) {
@@ -139,7 +141,11 @@ export default function AccountSetup({
             min="0"
             max="100"
             value={volume}
-            onChange={(e) => setVolume(Number(e.target.value))}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              setVolume(v);
+              if (onVolumeChange) onVolumeChange(v);
+            }}
             className="w-full"
           />
           <div className="mt-2 flex justify-between text-xs text-slate-500">

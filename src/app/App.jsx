@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { loadWizardState, saveWizardState } from "../lib/wizardStorage.js";
 import WizardLayout from "../components/wizard/WizardLayout";
 import AccountBasic from "../steps/AccountBasic";
 import AccountSetup from "../steps/AccountSetup";
@@ -13,25 +14,7 @@ const TITLES = {
 };
 
 export default function App() {
-  const [step, setStep] = useState(1);
-  const [country, setCountry] = useState("US");
-  const [accountType, setAccountType] = useState("individual");
-  const [goal, setGoal] = useState("");
-  const [basic, setBasic] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-  });
-  const [details, setDetails] = useState({
-    dob: "",
-    address1: "",
-    city: "",
-    postal: "",
-    state: "",
-    ssn: "",
-    pan: "",
-    nationalId: "",
-  });
+  const [wizardState, setWizardState] = useState(loadWizardState);
   const [stepValid, setStepValid] = useState({
     1: false,
     2: false,
@@ -43,19 +26,27 @@ export default function App() {
     3: false,
   });
 
+  useEffect(() => {
+    saveWizardState(wizardState);
+  }, [wizardState]);
+
+  const step = wizardState.step;
   const next = () => {
-    if (step === 4) {
-      setStep(4);
-      return;
-    }
-
+    if (step === 4) return;
     setShowErrors((prev) => ({ ...prev, [step]: true }));
-
     if (stepValid[step]) {
-      setStep((s) => Math.min(4, s + 1));
+      setWizardState((prev) => ({
+        ...prev,
+        step: Math.min(4, prev.step + 1),
+      }));
     }
   };
-  const back = () => setStep((s) => Math.max(1, s - 1));
+  const back = () => {
+    setWizardState((prev) => ({
+      ...prev,
+      step: Math.max(1, prev.step - 1),
+    }));
+  };
 
   return (
     <WizardLayout
@@ -77,13 +68,18 @@ export default function App() {
       <div className={step === 1 ? "mt-8" : ""}>
         {step === 1 && (
           <AccountBasic
-            onChange={(next) => {
-              setBasic({
-                fullName: next.fullName,
-                email: next.email,
-                phone: next.phone,
-              });
-              setCountry(next.country || "US");
+            initialBasic={wizardState.basic}
+            onChange={(nextBasic) => {
+              setWizardState((prev) => ({
+                ...prev,
+                basic: {
+                  fullName: nextBasic.fullName ?? prev.basic.fullName,
+                  email: nextBasic.email ?? prev.basic.email,
+                  phone: nextBasic.phone ?? prev.basic.phone,
+                  country: nextBasic.country ?? prev.basic.country,
+                  password: nextBasic.password,
+                },
+              }));
             }}
             onValidChange={(isValid) =>
               setStepValid((prev) => ({ ...prev, 1: isValid }))
@@ -93,12 +89,30 @@ export default function App() {
         )}
         {step === 2 && (
           <AccountSetup
-            initialAccountType={accountType}
-            initialGoal={goal}
-            onAccountTypeChange={(value) =>
-              setAccountType(value || "individual")
-            }
-            onGoalChange={setGoal}
+            initialAccountType={wizardState.setup.accountType}
+            initialGoal={wizardState.setup.goal}
+            initialVolume={wizardState.setup.volume}
+            onAccountTypeChange={(value) => {
+              setWizardState((prev) => ({
+                ...prev,
+                setup: {
+                  ...prev.setup,
+                  accountType: value ?? prev.setup.accountType,
+                },
+              }));
+            }}
+            onGoalChange={(value) => {
+              setWizardState((prev) => ({
+                ...prev,
+                setup: { ...prev.setup, goal: value ?? prev.setup.goal },
+              }));
+            }}
+            onVolumeChange={(value) => {
+              setWizardState((prev) => ({
+                ...prev,
+                setup: { ...prev.setup, volume: value },
+              }));
+            }}
             onValidChange={(isValid) =>
               setStepValid((prev) => ({ ...prev, 2: isValid }))
             }
@@ -107,10 +121,15 @@ export default function App() {
         )}
         {step === 3 && (
           <Details
-            accountType={accountType}
-            country={country}
-            initialDetails={details}
-            onChangeDetails={setDetails}
+            accountType={wizardState.setup.accountType}
+            country={wizardState.basic.country}
+            initialDetails={wizardState.details}
+            onChangeDetails={(nextDetails) => {
+              setWizardState((prev) => ({
+                ...prev,
+                details: nextDetails,
+              }));
+            }}
             onValidChange={(isValid) =>
               setStepValid((prev) => ({ ...prev, 3: isValid }))
             }
@@ -119,16 +138,14 @@ export default function App() {
         )}
         {step === 4 && (
           <Review
-            basic={basic}
-            accountType={accountType}
-            goal={goal}
-            country={country}
-            details={details}
+            basic={wizardState.basic}
+            accountType={wizardState.setup.accountType}
+            goal={wizardState.setup.goal}
+            country={wizardState.basic.country}
+            details={wizardState.details}
           />
         )}
       </div>
     </WizardLayout>
   );
 }
-
-
