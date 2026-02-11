@@ -36,12 +36,15 @@ function Chip({ label, selected, onClick }) {
 }
 
 export default function AccountSetup({
+  initialAccountType = "",
+  initialGoal = "",
   onAccountTypeChange,
+  onGoalChange,
   onValidChange,
   showErrors,
 }) {
-  const [accountType, setAccountType] = useState(""); // individual | business
-  const [goal, setGoal] = useState(""); // spend | save | invest
+  const [accountType, setAccountType] = useState(initialAccountType);
+  const [goal, setGoal] = useState(initialGoal);
   const [volume, setVolume] = useState(40);
   const [errors, setErrors] = useState({});
 
@@ -99,6 +102,7 @@ export default function AccountSetup({
             selected={goal === "spend"}
             onClick={() => {
               setGoal("spend");
+              if (onGoalChange) onGoalChange("spend");
               validate(accountType, "spend");
             }}
           />
@@ -107,6 +111,7 @@ export default function AccountSetup({
             selected={goal === "save"}
             onClick={() => {
               setGoal("save");
+              if (onGoalChange) onGoalChange("save");
               validate(accountType, "save");
             }}
           />
@@ -115,6 +120,7 @@ export default function AccountSetup({
             selected={goal === "invest"}
             onClick={() => {
               setGoal("invest");
+              if (onGoalChange) onGoalChange("invest");
               validate(accountType, "invest");
             }}
           />

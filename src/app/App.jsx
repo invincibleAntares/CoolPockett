@@ -16,10 +16,21 @@ export default function App() {
   const [step, setStep] = useState(1);
   const [country, setCountry] = useState("US");
   const [accountType, setAccountType] = useState("individual");
+  const [goal, setGoal] = useState("");
   const [basic, setBasic] = useState({
     fullName: "",
     email: "",
     phone: "",
+  });
+  const [details, setDetails] = useState({
+    dob: "",
+    address1: "",
+    city: "",
+    postal: "",
+    state: "",
+    ssn: "",
+    pan: "",
+    nationalId: "",
   });
   const [stepValid, setStepValid] = useState({
     1: false,
@@ -82,9 +93,12 @@ export default function App() {
         )}
         {step === 2 && (
           <AccountSetup
+            initialAccountType={accountType}
+            initialGoal={goal}
             onAccountTypeChange={(value) =>
               setAccountType(value || "individual")
             }
+            onGoalChange={setGoal}
             onValidChange={(isValid) =>
               setStepValid((prev) => ({ ...prev, 2: isValid }))
             }
@@ -95,13 +109,23 @@ export default function App() {
           <Details
             accountType={accountType}
             country={country}
+            initialDetails={details}
+            onChangeDetails={setDetails}
             onValidChange={(isValid) =>
               setStepValid((prev) => ({ ...prev, 3: isValid }))
             }
             showErrors={showErrors[3]}
           />
         )}
-        {step === 4 && <Review basic={basic} accountType={accountType} country={country} />}
+        {step === 4 && (
+          <Review
+            basic={basic}
+            accountType={accountType}
+            goal={goal}
+            country={country}
+            details={details}
+          />
+        )}
       </div>
     </WizardLayout>
   );

@@ -3,9 +3,22 @@ import Field from "../components/ui/Field";
 import Input from "../components/ui/Input";
 import Select from "../components/ui/Select";
 
+const defaultDetails = {
+  dob: "",
+  address1: "",
+  city: "",
+  postal: "",
+  state: "",
+  ssn: "",
+  pan: "",
+  nationalId: "",
+};
+
 export default function Details({
   accountType = "individual",
   country = "US",
+  initialDetails,
+  onChangeDetails,
   onValidChange,
   showErrors,
 }) {
@@ -13,16 +26,10 @@ export default function Details({
   const countryLabel =
     country === "US" ? "United States" : country === "IN" ? "India" : "Other";
 
-  const [values, setValues] = useState({
-    dob: "",
-    address1: "",
-    city: "",
-    postal: "",
-    state: "",
-    ssn: "",
-    pan: "",
-    nationalId: "",
-  });
+  const [values, setValues] = useState(() => ({
+    ...defaultDetails,
+    ...(initialDetails || {}),
+  }));
   const [errors, setErrors] = useState({});
 
   function validate(next = values) {
@@ -70,6 +77,7 @@ export default function Details({
           onChange={(e) => {
             const next = { ...values, dob: e.target.value };
             setValues(next);
+            if (onChangeDetails) onChangeDetails(next);
             validate(next);
           }}
         />
@@ -85,6 +93,7 @@ export default function Details({
           onChange={(e) => {
             const next = { ...values, address1: e.target.value };
             setValues(next);
+            if (onChangeDetails) onChangeDetails(next);
             validate(next);
           }}
         />
@@ -100,6 +109,7 @@ export default function Details({
           onChange={(e) => {
             const next = { ...values, city: e.target.value };
             setValues(next);
+            if (onChangeDetails) onChangeDetails(next);
             validate(next);
           }}
         />
@@ -115,6 +125,7 @@ export default function Details({
           onChange={(e) => {
             const next = { ...values, postal: e.target.value };
             setValues(next);
+            if (onChangeDetails) onChangeDetails(next);
             validate(next);
           }}
         />
@@ -135,6 +146,7 @@ export default function Details({
                 onChange={(e) => {
                   const next = { ...values, state: e.target.value };
                   setValues(next);
+                  if (onChangeDetails) onChangeDetails(next);
                   validate(next);
                 }}
               >
@@ -158,6 +170,7 @@ export default function Details({
                 onChange={(e) => {
                   const next = { ...values, ssn: e.target.value };
                   setValues(next);
+                  if (onChangeDetails) onChangeDetails(next);
                   validate(next);
                 }}
               />
@@ -178,6 +191,7 @@ export default function Details({
                 onChange={(e) => {
                   const next = { ...values, pan: e.target.value };
                   setValues(next);
+                  if (onChangeDetails) onChangeDetails(next);
                   validate(next);
                 }}
               />
@@ -200,6 +214,7 @@ export default function Details({
                 onChange={(e) => {
                   const next = { ...values, nationalId: e.target.value };
                   setValues(next);
+                  if (onChangeDetails) onChangeDetails(next);
                   validate(next);
                 }}
               />
