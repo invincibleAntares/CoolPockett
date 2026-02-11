@@ -99,6 +99,14 @@ export default function Review({
                   <span>{details.role}</span>
                 </div>
               )}
+              {details.documentFileName && (
+                <div className="flex justify-between">
+                  <span>Document:</span>
+                  <span className="max-w-[60%] truncate text-right">
+                    {details.documentFileName}
+                  </span>
+                </div>
+              )}
             </>
           ) : (
             <>
@@ -148,6 +156,14 @@ export default function Review({
                 <div className="flex justify-between">
                   <span>National ID:</span>
                   <span>{details.nationalId}</span>
+                </div>
+              )}
+              {details.documentFileName && (
+                <div className="flex justify-between">
+                  <span>Document:</span>
+                  <span className="max-w-[60%] truncate text-right">
+                    {details.documentFileName}
+                  </span>
                 </div>
               )}
             </>

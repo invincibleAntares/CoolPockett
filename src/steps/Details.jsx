@@ -12,6 +12,7 @@ const defaultDetails = {
   ssn: "",
   pan: "",
   nationalId: "",
+  documentFileName: "",
   businessLegalName: "",
   registrationCountry: "",
   role: "",
@@ -135,6 +136,22 @@ export default function Details({
             {showErrors && errors.role && (
               <p className="mt-1 text-xs text-red-600">{errors.role}</p>
             )}
+          </Field>
+
+          <Field label="Document upload ">
+            <input
+              type="file"
+              onChange={(e) => {
+                const fileName = e.target.files?.[0]?.name || "";
+                const next = { ...values, documentFileName: fileName };
+                setValues(next);
+                if (onChangeDetails) onChangeDetails(next);
+              }}
+              className="h-10 w-full rounded border border-slate-300 bg-white px-3 text-[14px] outline-none file:mr-3 file:rounded file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:text-[13px] file:font-medium file:text-slate-900"
+            />
+            <p className="mt-2 text-xs text-slate-600">
+              {values.documentFileName ? values.documentFileName : "No file selected"}
+            </p>
           </Field>
         </div>
       ) : (
@@ -296,6 +313,22 @@ export default function Details({
           </>
         )}
       </div>
+
+      <Field label="Document upload">
+        <input
+          type="file"
+          onChange={(e) => {
+            const fileName = e.target.files?.[0]?.name || "";
+            const next = { ...values, documentFileName: fileName };
+            setValues(next);
+            if (onChangeDetails) onChangeDetails(next);
+          }}
+          className="h-10 w-full rounded border border-slate-300 bg-white px-3 text-[14px] outline-none file:mr-3 file:rounded file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:text-[13px] file:font-medium file:text-slate-900"
+        />
+        <p className="mt-2 text-xs text-slate-600">
+          {values.documentFileName ? values.documentFileName : "No file selected"}
+        </p>
+      </Field>
         </>
       )}
     </div>
