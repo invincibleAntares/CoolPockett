@@ -110,4 +110,12 @@ High level:
 - The API stores the draft and returns a short token (or one-time link).
 - Opening the link restores the wizard to the exact step with the saved data.
 
+---
+
+## If I had more time
+
+- **Smoother step transitions**: add a subtle slide/fade animation between steps (and for the progress dots) to make the wizard feel more polished, while respecting `prefers-reduced-motion`.
+- **Accessibility polish**: improve keyboard navigation for the custom Select (arrow keys + typeahead) and wire up `aria-invalid` / `aria-describedby` for error text.
+- **Performance tidy-up**: debounce localStorage writes and memoize step components where useful to reduce unnecessary re-renders.
+
 
