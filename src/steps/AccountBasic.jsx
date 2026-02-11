@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Field from "../components/ui/Field";
 import Input from "../components/ui/Input";
 import Select from "../components/ui/Select";
@@ -38,6 +38,8 @@ export default function AccountBasic({ onChange, onValidChange, showErrors }) {
 
     if (!values.phone?.trim()) {
       nextErrors.phone = "Phone is required.";
+    } else if (!/^\d{10}$/.test(values.phone)) {
+      nextErrors.phone = "Phone must be 10 digits.";
     }
 
     if (!values.country) {
@@ -55,6 +57,13 @@ export default function AccountBasic({ onChange, onValidChange, showErrors }) {
   }
 
   const strength = passwordStrength(data.password);
+
+  useEffect(() => {
+    if (showErrors) {
+      validate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showErrors]);
 
   return (
     <div className="space-y-3">
@@ -97,7 +106,8 @@ export default function AccountBasic({ onChange, onValidChange, showErrors }) {
           placeholder="Enter phone"
           value={data.phone}
           onChange={(e) => {
-            const next = { ...data, phone: e.target.value };
+            const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 10);
+            const next = { ...data, phone: digitsOnly };
             setData(next);
             if (onChange) onChange(next);
             validate(next);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "../lib/cn";
 
 function SelectCard({ title, selected, onClick }) {
@@ -54,6 +54,13 @@ export default function AccountSetup({
     if (onValidChange) onValidChange(ok);
     return ok;
   }
+
+  useEffect(() => {
+    if (showErrors) {
+      validate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showErrors]);
 
   return (
     <div className="space-y-8">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Field from "../components/ui/Field";
 import Input from "../components/ui/Input";
 import Select from "../components/ui/Select";
@@ -46,6 +46,13 @@ export default function Details({
     if (onValidChange) onValidChange(ok);
     return ok;
   }
+
+  useEffect(() => {
+    if (showErrors) {
+      validate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showErrors, country]);
 
   return (
     <div className="space-y-6">
